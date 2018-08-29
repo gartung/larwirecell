@@ -42,8 +42,9 @@ void SimChannelSaver::produces(art::EDProducer* prod)
     assert(prod);
 }
 
-void SimChannelSaver::create_simchannels(art::Event &,WireCell::IDepo::vector const&)
+void SimChannelSaver::create_simchannels(art::Event & event,WireCell::IDepo::vector const& depo_vec)
 {
+    std::cout << "\tIn event " << event.event() << " with " << depo_vec.size() << " drifted depos." << std::endl;
 }
 
 void SimChannelSaver::visit(art::Event & event)
