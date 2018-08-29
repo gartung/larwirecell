@@ -39,6 +39,7 @@ namespace wcls {
         WireCell::IDepo::vector in_depo_vec;
 	bool received_eos;
 
+	void print_depo(WireCell::IDepo::pointer const&);
 	void create_simchannels(art::Event & event,WireCell::IDepo::vector const&);
     };
 }

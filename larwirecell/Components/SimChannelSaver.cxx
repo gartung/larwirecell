@@ -42,9 +42,41 @@ void SimChannelSaver::produces(art::EDProducer* prod)
     assert(prod);
 }
 
+void SimChannelSaver::print_depo(WireCell::IDepo::pointer const& depo_ptr)
+{
+    std::cout << "(x,y,z)=(" 
+	      << depo_ptr->pos().x() << ","
+	      << depo_ptr->pos().y() << ","
+	      << depo_ptr->pos().z() << ")\n"
+
+	      << "extent (long,trans)=("
+	      << depo_ptr->extent_long() << ","
+	      << depo_ptr->extent_tran() << ")\n"
+
+	      << "charge=" << depo_ptr->charge() << "\n"
+	
+	      << "id=" << depo_ptr->id() << "\n"
+	      << "pdg=" << depo_ptr->pdg() << "\n"
+
+	      << "prior?" << (depo_ptr->prior()!=nullptr) << "\n"
+	      << std::endl;
+
+    if(depo_ptr->prior()){
+	std::cout << "Prior..." << std::endl;
+	print_depo(depo_ptr->prior());
+    }
+}
+
 void SimChannelSaver::create_simchannels(art::Event & event,WireCell::IDepo::vector const& depo_vec)
 {
-    std::cout << "\tIn event " << event.event() << " with " << depo_vec.size() << " drifted depos." << std::endl;
+    std::cout << "In event " << event.event() << " with " << depo_vec.size() << " drifted depos." << std::endl;
+
+    std::cout << "\t\tFirst depo..." << std::endl;
+
+    for(size_t i=0; i<10; ++i){
+	if (i>depo_vec.size()) break;
+	print_depo(depo_vec[i]);
+    }
 }
 
 void SimChannelSaver::visit(art::Event & event)
