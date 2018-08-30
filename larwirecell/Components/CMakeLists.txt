@@ -19,6 +19,7 @@ art_make_library(
 	lardata_Utilities
 	lardataobj_RawData
 	lardataobj_RecoBase
+	lardataobj_Simulation
         larcorealg_Geometry
 	larevt_CalibrationDBI_IOVData
 	larevt_CalibrationDBI_Providers

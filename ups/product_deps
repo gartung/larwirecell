@@ -12,7 +12,7 @@ defaultqual	e17
 #fcldir product_dir job
 #
 product         version
-larevt          v07_00_04
+larevt          v07_00_05
 wirecell	v0_7_0a
 
 cetbuildtools	v7_04_00   -   only_for_build
