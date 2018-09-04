@@ -225,6 +225,7 @@ void FrameSaver::save_as_raw(art::Event & event)
     const int ntags = m_frame_tags.size();
     for (int ind=0; ind<ntags; ++ind) {
 	auto tag = m_frame_tags[ind];
+        std::cerr << "wclsFrameSaver: saving raw::RawDigits tagged \"" << tag << "\"\n";
 
         if (!m_frame) { // is there someway to avoid this empty collection
                         // without annoying produces()?
@@ -276,6 +277,7 @@ void FrameSaver::save_as_cooked(art::Event & event)
     const int ntags = m_frame_tags.size();
     for (int ind=0; ind<ntags; ++ind) {
 	auto tag = m_frame_tags[ind];
+        std::cerr << "wclsFrameSaver: saving recob::Wires tagged \"" << tag << "\"\n";
 
         if (!m_frame) { // is there someway to avoid this empty collection
                         // without annoying produces()?
@@ -429,10 +431,18 @@ void FrameSaver::save_cmms(art::Event & event)
 void FrameSaver::visit(art::Event & event)
 {
     if (m_frame) {
-        std::cerr << "wclsFrameSaver: saving frame to art::Event\n";
+        std::cerr << "wclsFrameSaver: saving frame to art::Event, frame has trace tags:[";
+        for (auto tag : m_frame->trace_tags()) {
+            std::cerr << " " << tag;
+        }
+        std::cerr << " ], and frame tags:[";
+        for (auto tag : m_frame->frame_tags()) {
+            std::cerr << " " << tag;
+        }
+        std::cerr << " ]\n";
     }
     else {
-        std::cerr << "wclsFrameSaver: I have no frame to save to art::Event\n";
+        std::cerr << "wclsFrameSaver: saving empty frame to art::Event\n";
     }
 
     if (m_digitize) {

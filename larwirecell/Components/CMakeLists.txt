@@ -17,6 +17,7 @@ art_make_library(
         ${ROOT_BASIC_LIB_LIST}
         ${JSONCPP}
 	lardata_Utilities
+	lardata_DetectorInfoServices_DetectorClocksServiceStandard_service
 	lardataobj_RawData
 	lardataobj_RecoBase
 	lardataobj_Simulation

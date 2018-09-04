@@ -108,7 +108,8 @@ WireCell::Configuration SimDepoSource::default_configuration() const
     // a WC depo.
     cfg["scale"] = 1.0;
     
-    cfg["InputTag"] = "";
+    //cfg["InputTag"] = "";
+    cfg["InputTag"] = "bogus";
 
     return cfg;
 }
@@ -143,7 +144,13 @@ void SimDepoSource::configure(const WireCell::Configuration& cfg)
         }
     }
     
-    m_inputTag = cfg["InputTag"].asString();
+    //m_inputTag = cfg["InputTag"].asString();
+    const std::string it = cfg["InputTag"].asString();
+    if (it.empty()) {
+      //THROW(ValueError() << errmsg{"SimDepoSource requires an InputTag label"});
+      std::cout<<"the string is empty"<<std::endl;
+    }
+    m_inputTag = it;
 }
 
 
@@ -152,20 +159,23 @@ const std::string instance = "plopper"; // fixme:make configurable
 void SimDepoSource::visit(art::Event & event)
 {
     art::Handle< std::vector<sim::SimEnergyDeposit> > sedvh;
-    
-    bool okay = event.getByLabel(m_inputTag, sedvh);
-    if (!okay || sedvh->empty()) {
+
+    event.getByLabel(instance, label, sedvh);
+    bool okay = sedvh.isValid();
+    if(!okay){
         std::string msg = "SimDepoSource failed to get sim::SimEnergyDeposit from label: " + label;
         std::cerr << msg << std::endl;
-        THROW(WireCell::RuntimeError() << WireCell::errmsg{msg});
+	THROW(WireCell::RuntimeError() << WireCell::errmsg{msg});
     }
-    
+    /*std::cout<<"-----MADE IT A"<<std::endl;
+    std::vector<sim::SimEnergyDeposit> const& sedvh_v(*sedvh);
+    std::cout<<"-----MADE IT B  "<<sedvh_v.size()<<std::endl; */
     const size_t ndepos = sedvh->size();
-    
+
     std::cerr << "SimDepoSource got " << ndepos
               << " depos from label \"" << label
-              << "\" returns: " << okay << std::endl;
-    
+              << "\" returns: " << (okay ? "okay" : "fail") << std::endl;
+
     if (!m_depos.empty()) {
         std::cerr << "SimDepoSource dropping " << m_depos.size()
                   << " unused, prior depos\n";
@@ -187,8 +197,11 @@ void SimDepoSource::visit(art::Event & event)
         //           << " r=" << wpt/units::cm << "cm, "
         //           << " q=" << wq << "\n";
     }
+    // don't trust user to honor time ordering.
     std::sort(m_depos.begin(), m_depos.end(), WireCell::ascending_time);
-    std::cerr << "SimDepoSource: ready with " << m_depos.size() << " depos\n";
+    std::cerr << "SimDepoSource: ready with " << m_depos.size() << " depos spanning: ["
+              << m_depos.front()->time()/units::us << ", "
+              << m_depos.back()->time()/units::us << "]us\n";
     m_depos.push_back(nullptr); // EOS marker
 }
 

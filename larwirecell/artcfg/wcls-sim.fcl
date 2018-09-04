@@ -1,4 +1,4 @@
-process_name: bogoplopsim
+process_name: wclssim
 physics :{
    producers: {
       plopper : {
@@ -9,13 +9,21 @@ physics :{
          wcls_main: {
             tool_type: WCLS
             apps: ["Pgrapher"]
+
             plugins: ["WireCellPgraph", "WireCellGen","WireCellSio","WireCellLarsoft"]
-            //configs: ["bogosim.jsonnet"]
+
+            // needs to be found via your WIRECELL_PATH 
             configs: ["pgrapher/experiment/uboone/wcls-sim.jsonnet"]
+
+
+            // Contract note: these exact "type:name" must be used to identify
+            // the configuration data structures for these components in the Jsonnet.
+
             inputers: ["wclsSimDepoSource"]
             outputers: ["wclsFrameSaver"]
+
+            // Make available parameters via Jsonnet's std.extVar()
             params: {
-               detector: "uboone"
             }
          }
       }

@@ -38,7 +38,6 @@ bogoblip::BlipMaker::~BlipMaker()
 void bogoblip::BlipMaker::produce(art::Event & event)
 {
     ++m_count;
-    const double jump = m_count*1e9; // each call jump forward in time.
 
     auto out = std::make_unique< std::vector<sim::SimEnergyDeposit> >();
     
@@ -49,7 +48,7 @@ void bogoblip::BlipMaker::produce(art::Event & event)
     double t0 = 0.;
     double t1 = 0.;
     int trackid = 0;
-    int pdgid = 0;
+    //int pdgid = 0;
 
     
     // implicit units are cm, ns and MeV.
@@ -61,18 +60,29 @@ void bogoblip::BlipMaker::produce(art::Event & event)
 
     const double stepsize = 0.1; // cm
     const int nsteps = vlen/stepsize;
-    int nelectrons = stepsize * nelepercm;
-    sim::SimEnergyDeposit::Point_t last = start;
-    for (int istep=1; istep<nsteps; ++istep) {
-        sim::SimEnergyDeposit::Point_t next(start + stepsize*istep*vdir);
-        //std::cerr << last << " -> " << next << "\n";
-        out->emplace_back(sim::SimEnergyDeposit(nphotons,
-                                                nelectrons,
-                                                stepsize * mevpercm,
-                                                last, next,
-                                                jump + t0,
-                                                jump + t1, trackid,pdgid));
-        last = next;
+
+    // larsoft works in ns
+    const double ns = 1.0;
+    const double us = 1000.0*ns;
+    const double ms = 1000.0*us;
+
+    // MB: WCT sim should cut the first, the second should just be on
+    // the edge of time acceptance.  The last two bracket the BNB beam
+    // gate.
+    for (double jump : { -1.6*ms, -1*ms, +3125*ns, (3125+1600)*ns, }) {
+        sim::SimEnergyDeposit::Point_t last = start;
+        for (int istep=1; istep<nsteps; ++istep) {
+            const sim::SimEnergyDeposit::Point_t next(start + stepsize*istep*vdir);
+            //std::cerr << last << " -> " << next << "\n";
+            out->emplace_back(sim::SimEnergyDeposit(nphotons,
+                                                    stepsize * nelepercm,
+                                                    stepsize * mevpercm,
+                                                    last, next,
+                                                    jump + t0,
+                                                    jump + t1, trackid));
+            last = next;
+        }
+
     }
 
     std::cerr << "BlipMaker making " << out->size() << " depos to label: " << label << std::endl;

@@ -41,14 +41,15 @@ namespace wcls {
 	WireCell::IAnodePlane::pointer m_anode;
 	WireCell::IRandom::pointer m_rng;
 
-	std::map<unsigned int,std::vector<sim::SimChannel> > m_mapSC;
+	std::map<unsigned int,sim::SimChannel> m_mapSC;
 
 	void save_as_simchannel(const WireCell::IDepo::pointer& depo);
-	/*
+
 	double m_readout_time;
 	double m_tick;
 	double m_start_time;
-	double m_nsigma; */
+	double m_nsigma; 
+	double m_drift_speed;
   };
 }
 
