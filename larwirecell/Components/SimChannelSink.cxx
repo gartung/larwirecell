@@ -108,8 +108,8 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	
 	  unsigned int temp_time = (unsigned int) (depo->time()/units::us-(-4.05e3)-4050+1.6e3) / (m_tick/units::us); // hacked G4 to tick
 	  //unsigned int temp_time = (unsigned int) (depo->time()/units::us-(-4.05e3) / (m_tick/units::us)); // hacked G4 to TDC
-	  //unsigned int temp_time = (unsigned int) depo->time()/units::us;
-	  //double temp_time = depo->time()/units::us;
+
+	  //unsigned int temp_time = (unsigned int) depo->time()/units::ns; // G4
 	  //auto tdc = ts->TPCG4Time2TDC(temp_time);
 	  
 	  const std::pair<int,int> impact_range = bindiff.impact_bin_range(m_nsigma);
@@ -123,11 +123,10 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	    const int max_tick = tbins.bin(time_span.second);
 	    for(int t=min_tick; t<=max_tick; t++){
 	      //const double tdc = tbins.center(t);
-	      //std::cout<<"tdc "<<tdc<<std::endl;
-	      //std::cout<<"charge from wave: "<<wave[t]<<std::endl;
 
 	      //double temp_charge = depo->charge();		    
 	      double temp_charge = wave[t];
+
 	      if(temp_charge>1){
 		sc.AddIonizationElectrons(id, 
 					  temp_time,			
