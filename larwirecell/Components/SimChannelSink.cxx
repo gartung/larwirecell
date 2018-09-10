@@ -91,28 +91,24 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	  double depo_dist = pimpos->distance(depo->pos());
 	  std::pair<int,int> wire_pair = pimpos->closest(depo_dist); 
 	  auto& wires = plane->wires();
-	  
-	  unsigned int depo_chan = (unsigned int)wires[wire_pair.first]->channel();
-	  auto channelData = m_mapSC.find(depo_chan);
-	  sim::SimChannel& sc = (channelData == m_mapSC.end())
-	    ? (m_mapSC[depo_chan]=sim::SimChannel(depo_chan))
-	    : channelData->second;
 
 	  double xyz[3] = {depo->pos().x()/units::cm,
 			   depo->pos().y()/units::cm,
 			   depo->pos().z()/units::cm}; 
-	  double energy = 200.0; // !!!!! TEMPORARY !!!!!
+	  double energy = 200.0;
 	  int id = -10000;
 	  if(depo->prior()){ id = depo->prior()->id(); }
 	  else{ id = depo->id(); }
 	
-	  unsigned int temp_time = (unsigned int) (depo->time()/units::us-(-4.05e3)-4050+1.6e3) / (m_tick/units::us); // hacked G4 to tick
+	  //unsigned int temp_time = (unsigned int) (depo->time()/units::us-(-4.05e3)-4050+1.6e3) / (m_tick/units::us); // hacked G4 to tick
 	  //unsigned int temp_time = (unsigned int) (depo->time()/units::us-(-4.05e3) / (m_tick/units::us)); // hacked G4 to TDC
-
 	  //unsigned int temp_time = (unsigned int) depo->time()/units::ns; // G4
 	  //auto tdc = ts->TPCG4Time2TDC(temp_time);
 	  
 	  const std::pair<int,int> impact_range = bindiff.impact_bin_range(m_nsigma);
+	  int reference_impact = (int)(impact_range.first+impact_range.second)/2;
+	  int reference_channel = wires[wire_pair.first]->channel();
+
 	  for(int i=impact_range.first; i<=impact_range.second; i++){
 	    auto impact_data = bindiff.impact_data(i);
 	    if(!impact_data) continue;
@@ -122,14 +118,25 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	    const int min_tick = tbins.bin(time_span.first);
 	    const int max_tick = tbins.bin(time_span.second);
 	    for(int t=min_tick; t<=max_tick; t++){
-	      //const double tdc = tbins.center(t);
+
+	      const double tdc = tbins.center(t);
+	      unsigned int temp_time = (unsigned int) (tdc/units::us-(-4.05e3)-4050+1.6e3) / (m_tick/units::us); // hacked G4 to tick
 
 	      //double temp_charge = depo->charge();		    
 	      double temp_charge = wave[t];
 
 	      if(temp_charge>1){
+
+		int channel_change = find_uboone_channel(i,reference_impact,wire_pair.second);
+		unsigned int depo_chan = (unsigned int)reference_channel+channel_change;
+
+		auto channelData = m_mapSC.find(depo_chan);
+		sim::SimChannel& sc = (channelData == m_mapSC.end())
+		  ? (m_mapSC[depo_chan]=sim::SimChannel(depo_chan))
+		  : channelData->second;
+		
 		sc.AddIonizationElectrons(id, 
-					  temp_time,			
+					  temp_time,
 					  temp_charge, //-wave[t],
 					  xyz, 
 					  energy);			
@@ -141,6 +148,32 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
     } //face
       
 }
+
+int SimChannelSink::find_uboone_channel(int this_impact_bin, int reference_impact_bin, int centroid_impact)
+{
+  int channel_change = 0;
+  float num_channel = 1.0;
+  float steps = (float)this_impact_bin - reference_impact_bin;
+  float threshold = 0.0;
+
+  if(steps>0 && centroid_impact>0){ threshold = 6-centroid_impact; }
+  if(steps>0 && centroid_impact<0){ threshold = 10+centroid_impact; }
+  if(steps<0 && centroid_impact>0){ threshold = 10-centroid_impact; }
+  if(steps<0 && centroid_impact<0){ threshold = 6+centroid_impact; }
+
+  while(num_channel>abs(channel_change)){
+    if(abs(steps)/(threshold+(10*(num_channel-1.0))) >= 1.0){
+      channel_change = (int)num_channel*(abs(steps)/steps);
+      num_channel++;
+    }
+    else{ 
+      break;
+    }
+  }
+
+  return channel_change;
+}
+
 
 void SimChannelSink::visit(art::Event & event)
 {

@@ -44,6 +44,9 @@ namespace wcls {
 	std::map<unsigned int,sim::SimChannel> m_mapSC;
 
 	void save_as_simchannel(const WireCell::IDepo::pointer& depo);
+	int find_uboone_channel(int this_impact_bin, 
+				int reference_impact_bin, 
+				int centroid_impact);
 
 	double m_readout_time;
 	double m_tick;
