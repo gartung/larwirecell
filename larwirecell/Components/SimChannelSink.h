@@ -53,6 +53,13 @@ namespace wcls {
 	double m_start_time;
 	double m_nsigma; 
 	double m_drift_speed;
+	double m_uboone_u_to_rp;
+	double m_uboone_v_to_rp;
+	double m_uboone_y_to_rp;
+	
+	float f_u_time_offset;
+	float f_v_time_offset;
+	float f_y_time_offset;	
   };
 }
 
