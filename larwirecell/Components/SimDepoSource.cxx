@@ -177,11 +177,9 @@ void SimDepoSource::visit(art::Event & event)
         const WireCell::Point wpt(pt.x()*units::cm, pt.y()*units::cm, pt.z()*units::cm);
         double wt = sed.Time()*units::ns;
         double wq = (*m_adapter)(sed);
-        
         if (wq == 0.0) {
             continue;
         } 
-
         int wid = sed.TrackID();
 
         WireCell::IDepo::pointer depo
