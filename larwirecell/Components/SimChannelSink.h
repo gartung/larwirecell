@@ -11,6 +11,7 @@
 #include "WireCellIface/IConfigurable.h"
 #include "WireCellIface/IAnodePlane.h"
 #include "WireCellIface/IRandom.h"
+#include "WireCellUtil/Pimpos.h"
 #include "larwirecell/Interfaces/IArtEventVisitor.h"
 #include "lardataobj/Simulation/SimChannel.h"
 
@@ -44,9 +45,7 @@ namespace wcls {
 	std::map<unsigned int,sim::SimChannel> m_mapSC;
 
 	void save_as_simchannel(const WireCell::IDepo::pointer& depo);
-	int find_uboone_channel(int this_impact_bin, 
-				int reference_impact_bin, 
-				int centroid_impact);
+	int find_uboone_channel(int impact_bin, int reference_bin, int centroid_impact);
 
 	double m_readout_time;
 	double m_tick;
@@ -56,10 +55,15 @@ namespace wcls {
 	double m_uboone_u_to_rp;
 	double m_uboone_v_to_rp;
 	double m_uboone_y_to_rp;
-	
-	float f_u_time_offset;
-	float f_v_time_offset;
-	float f_y_time_offset;	
+	double m_u_time_offset;
+	double m_v_time_offset;
+	double m_y_time_offset;	
+
+	double Pi = 3.141592653589;
+	WireCell::Pimpos *uboone_u;
+	WireCell::Pimpos *uboone_v;
+	WireCell::Pimpos *uboone_y;
+	WireCell::Pimpos *pimpos;
   };
 }
 
