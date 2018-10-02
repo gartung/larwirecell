@@ -89,7 +89,7 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 
     if(!depo) return;
     if(depo->charge()<1.0) return;
-    std::cout<<"depo charge: "<<depo->charge()<<std::endl;
+    //std::cout<<"depo charge: "<<depo->charge()<<std::endl;
     for(auto face : m_anode->faces()){
         auto boundbox = face->sensitive();
         if(!boundbox.inside(depo->pos())) continue;
