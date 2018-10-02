@@ -43,6 +43,7 @@ WireCell::Configuration SimChannelSink::default_configuration() const
     cfg["u_time_offset"] = 0.0*units::us;
     cfg["v_time_offset"] = 0.0*units::us;
     cfg["y_time_offset"] = 0.0*units::us;
+    cfg["use_energy"] = false;
     return cfg;
 }
 
@@ -71,6 +72,7 @@ void SimChannelSink::configure(const WireCell::Configuration& cfg)
     m_u_time_offset = get(cfg,"u_time_offset",0.0*units::us);
     m_v_time_offset = get(cfg,"v_time_offset",0.0*units::us);
     m_y_time_offset = get(cfg,"y_time_offset",0.0*units::us);
+    m_use_energy = get(cfg,"use_energy",false);
 
     uboone_u = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(Pi/6),cos(Pi/6)), Point(0,cos(5*Pi/6),sin(5*Pi/6)), Point(94,9.7,5184.98), 1);
     uboone_v = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(5*Pi/6),cos(5*Pi/6)), Point(0,cos(Pi/6),sin(Pi/6)), Point(94,9.7,5184.98), 1);
@@ -103,10 +105,16 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	    auto& wires = face->plane(plane)->wires();
 
 	    double xyz[3];
-	    double energy = 100.0;
 	    int id = -10000;
-	    if(depo->prior()){ id = depo->prior()->id(); }
-	    else{ id = depo->id(); }
+	    double energy = 100.0;
+	    if(depo->prior()){ 
+	      id = depo->prior()->id(); 
+	      //if(m_use_energy == true){ energy = depo->prior()->energy(); }
+	    }
+	    else{ 
+	      id = depo->id(); 
+	      //if(m_use_energy == true){ energy = depo->energy(); }
+	    }
 
 	    const std::pair<int,int> impact_range = bindiff.impact_bin_range(m_nsigma);
 	    int reference_impact = (int)(impact_range.first+impact_range.second)/2;
