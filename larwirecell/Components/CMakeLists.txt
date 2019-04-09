@@ -14,7 +14,7 @@ art_make_library(
         art_Utilities
         canvas cetlib cetlib_except
         ${Boost_SYSTEM_LIBRARY}
-        ${ROOT_BASIC_LIB_LIST}
+        ${ROOT_LIBRARIES}
         ${JSONCPP}
 	lardata_Utilities
 	lardataobj_RawData
