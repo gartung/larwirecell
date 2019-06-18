@@ -39,18 +39,17 @@ cet_set_compiler_flags(DIAGS CAUTIOUS
 cet_report_compiler_flags()
 
 # these are minimum required versions, not the actual product versions
-find_package( larevt REQUIRED )
-find_package( wirecell )
+find_package(larevt REQUIRED)
+find_package(canvas_root_io REQUIRED)
 
-
-cet_find_library( WIRECELL_SIGPROC_LIB NAMES WireCellSigProc PATHS )
-cet_find_library( WIRECELL_GEN_LIB NAMES WireCellGen PATHS )
-cet_find_library( WIRECELL_IFACE_LIB NAMES WireCellIface PATHS )
-cet_find_library( WIRECELL_UTIL_LIB NAMES WireCellUtil PATHS )
-cet_find_library( WIRECELL_APPS_LIB NAMES WireCellApps PATHS )
+cet_find_library( WIRECELL_SIGPROC_LIB NAMES WireCellSigProc NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+cet_find_library( WIRECELL_GEN_LIB NAMES WireCellGen NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+cet_find_library( WIRECELL_IFACE_LIB NAMES WireCellIface NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+cet_find_library( WIRECELL_UTIL_LIB NAMES WireCellUtil NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+cet_find_library( WIRECELL_APPS_LIB NAMES WireCellApps NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 set(WIRECELL_LIBS ${WIRECELL_APPS_LIB} ${WIRECELL_SIGPROC_LIB} ${WIRECELL_IFACE_LIB} ${WIRECELL_UTIL_LIB} ${WIRECELL_GEN_LIB})
 
-cet_find_library( JSONCPP NAMES jsoncpp )
+cet_find_simple_package(jsoncpp HEADERS json/json.h)
 
 # macros for dictionary and simple_plugin
 include(ArtDictionary)
