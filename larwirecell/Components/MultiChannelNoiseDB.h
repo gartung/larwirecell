@@ -71,9 +71,6 @@ namespace wcls {
         virtual float coherent_nf_min_adc_limit(int channel) const {
             return m_pimpl->coherent_nf_min_adc_limit(channel);
         }
-        virtual float coherent_nf_roi_min_max_ratio(int channel) const {
-            return m_pimpl->coherent_nf_roi_min_max_ratio(channel);
-        }
         virtual const filter_t& rcrc(int channel) const {
             return m_pimpl->rcrc(channel);
         }
