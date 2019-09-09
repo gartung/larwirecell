@@ -18,9 +18,9 @@ SimChannelSink::SimChannelSink()
   : m_depo(nullptr)
 {
   m_mapSC.clear();
-  uboone_u = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(Pi/6),cos(Pi/6)), Point(0,cos(5*Pi/6),sin(5*Pi/6)), Point(94,9.7,5184.98), 1);
-  uboone_v = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(5*Pi/6),cos(5*Pi/6)), Point(0,cos(Pi/6),sin(Pi/6)), Point(94,9.7,5184.98), 1);
-  uboone_y = new Pimpos(3456, -5182.5, 5182.5, Point(0,1,0), Point(0,0,1), Point(94,9.7,5184.98), 1);
+  //uboone_u = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(Pi/6),cos(Pi/6)), Point(0,cos(5*Pi/6),sin(5*Pi/6)), Point(94,9.7,5184.98), 1);
+  //uboone_v = new Pimpos(2400, -3598.5, 3598.5, Point(0,sin(5*Pi/6),cos(5*Pi/6)), Point(0,cos(Pi/6),sin(Pi/6)), Point(94,9.7,5184.98), 1);
+  //uboone_y = new Pimpos(3456, -5182.5, 5182.5, Point(0,1,0), Point(0,0,1), Point(94,9.7,5184.98), 1);
 }
 
 SimChannelSink::~SimChannelSink()
@@ -47,6 +47,47 @@ WireCell::Configuration SimChannelSink::default_configuration() const
     cfg["v_time_offset"] = 0.0*units::us;
     cfg["y_time_offset"] = 0.0*units::us;
     cfg["use_energy"] = false;
+
+    cfg["u_nwires"] = 2400;
+    cfg["v_nwires"] = 2400;
+    cfg["y_nwires"] = 3456;
+    cfg["u_minwirepitch"] = -3598.5;
+    cfg["u_maxwirepitch"] = 3598.5;
+    cfg["v_minwirepitch"] = -3598.5;
+    cfg["v_maxwirepitch"] = 3598.5;
+    cfg["y_minwirepitch"] = -5182.5;
+    cfg["y_maxwirepitch"] = 5182.5;
+
+    cfg["u_wirevec_x"] = 0;
+    cfg["u_wirevec_y"] = 0.5;
+    cfg["u_wirevec_z"] = 0.86602540;
+    cfg["u_pitchvec_x"] = 0;
+    cfg["u_pitchvec_y"] = -0.86602540;
+    cfg["u_pitchvec_z"] = 0.5;
+    cfg["u_origvec_x"] = 94;
+    cfg["u_origvec_y"] = 9.7;
+    cfg["u_origvec_z"] = 5184.98;
+
+    cfg["v_wirevec_x"] = 0;
+    cfg["v_wirevec_y"] = 0.5;
+    cfg["v_wirevec_z"] = -0.86602540;
+    cfg["v_pitchvec_x"] = 0;
+    cfg["v_pitchvec_y"] = 0.86602540;
+    cfg["v_pitchvec_z"] = 0.5;
+    cfg["v_origvec_x"] = 94;
+    cfg["v_origvec_y"] = 9.7;
+    cfg["v_origvec_z"] = 5184.98;
+
+    cfg["y_wirevec_x"] = 0;
+    cfg["y_wirevec_y"] = 1;
+    cfg["y_wirevec_z"] = 0;
+    cfg["y_pitchvec_x"] = 0;
+    cfg["y_pitchvec_y"] = 0;
+    cfg["y_pitchvec_z"] = 1;
+    cfg["y_origvec_x"] = 94;
+    cfg["y_origvec_y"] = 9.7;
+    cfg["y_origvec_z"] = 5184.98;
+
     return cfg;
 }
 
@@ -77,6 +118,63 @@ void SimChannelSink::configure(const WireCell::Configuration& cfg)
     m_y_time_offset = get(cfg,"y_time_offset",0.0*units::us);
     m_use_energy = get(cfg,"use_energy",false);
 
+    m_u_nwires = get(cfg,"u_nwires",2400);
+    m_v_nwires = get(cfg,"v_wires",2400);
+    m_y_nwires = get(cfg,"y_nwires",3456);
+    m_u_minwirepitch = get(cfg,"u_minwirepitch",-3598.5);
+    m_u_maxwirepitch = get(cfg,"u_maxwirepitch",3598.5);
+    m_v_minwirepitch = get(cfg,"v_minwirepitch",-3598.5);
+    m_v_maxwirepitch = get(cfg,"v_maxwirepitch",3598.5);
+    m_y_minwirepitch = get(cfg,"y_minwirepitch",-5182.5);
+    m_y_maxwirepitch = get(cfg,"y_maxwirepitch",5182.5);
+
+    m_u_wirevec_x = get(cfg,"u_wirevec_x",0);
+    m_u_wirevec_y = get(cfg,"u_wirevec_y",0.5);
+    m_u_wirevec_z = get(cfg,"u_wirevec_z",0.86602540);
+    m_u_pitchvec_x = get(cfg,"u_pitchvec_x",0);
+    m_u_pitchvec_y = get(cfg,"u_pitchvec_y",-0.86602540);
+    m_u_pitchvec_z = get(cfg,"u_pitchvec_z",0.5);
+    m_u_origvec_x = get(cfg,"u_origvec_x",94);
+    m_u_origvec_y = get(cfg,"u_origvec_y",9.7);
+    m_u_origvec_z = get(cfg,"u_origvec_z",5184.98);
+
+    m_v_wirevec_x = get(cfg,"v_wirevec_x",0);
+    m_v_wirevec_y = get(cfg,"v_wirevec_y",0.5);
+    m_v_wirevec_z = get(cfg,"v_wirevec_z",-0.86602540);
+    m_v_pitchvec_x = get(cfg,"v_pitchvec_x",0);
+    m_v_pitchvec_y = get(cfg,"v_pitchvec_y",0.86602540);
+    m_v_pitchvec_z = get(cfg,"v_pitchvec_z",0.5);
+    m_v_origvec_x = get(cfg,"v_origvec_x",94);
+    m_v_origvec_y = get(cfg,"v_origvec_y",9.7);
+    m_v_origvec_z = get(cfg,"v_origvec_z",5184.98);
+
+    m_y_wirevec_x = get(cfg,"y_wirevec_x",0);
+    m_y_wirevec_y = get(cfg,"y_wirevec_y",1);
+    m_y_wirevec_z = get(cfg,"y_wirevec_z",0);
+    m_y_pitchvec_x = get(cfg,"y_pitchvec_x",0);
+    m_y_pitchvec_y = get(cfg,"y_pitchvec_y",0);
+    m_y_pitchvec_z = get(cfg,"y_pitchvec_z",1);
+    m_y_origvec_x = get(cfg,"y_origvec_x",94);
+    m_y_origvec_y = get(cfg,"y_origvec_y",9.7);
+    m_y_origvec_z = get(cfg,"y_origvec_z",5184.98);
+
+    //define anode planes using configuration
+    uboone_u = new Pimpos(m_u_nwires, m_u_minwirepitch, m_u_maxwirepitch, 
+                          Point(m_u_wirevec_x,m_u_wirevec_y,m_u_wirevec_z), 
+                          Point(m_u_pitchvec_x,m_u_pitchvec_y,m_u_pitchvec_z), 
+                          Point(m_u_origvec_x,m_u_origvec_y,m_u_origvec_z),
+                          1);
+    uboone_v = new Pimpos(m_v_nwires, m_v_minwirepitch, m_v_maxwirepitch,
+                          Point(m_v_wirevec_x,m_v_wirevec_y,m_v_wirevec_z),
+                          Point(m_v_pitchvec_x,m_v_pitchvec_y,m_v_pitchvec_z),
+                          Point(m_v_origvec_x,m_v_origvec_y,m_v_origvec_z), 
+                          1);
+    uboone_y = new Pimpos(m_y_nwires, m_y_minwirepitch, m_y_maxwirepitch, 
+                          Point(m_y_wirevec_x,m_y_wirevec_y,m_y_wirevec_z),
+                          Point(m_y_pitchvec_x,m_y_pitchvec_y,m_y_pitchvec_z),
+                          Point(m_y_origvec_x,m_y_origvec_y,m_y_origvec_z),
+                          1);
+
 }
 
 void SimChannelSink::produces(art::EDProducer* prod)
@@ -87,6 +185,9 @@ void SimChannelSink::produces(art::EDProducer* prod)
 
 void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
   Binning tbins(m_readout_time/m_tick, m_start_time, m_start_time+m_readout_time);
+
+  //check
+  //std::cout << "SIM CHANNEL SINK HERE" << std::endl;
 
   if(!depo) return;
 
@@ -158,8 +259,8 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	  if (abs_pbin < min_imp || abs_pbin >= max_imp) continue;
 
 	  int channel = abs_pbin;
-	  if(plane == 1){ channel = abs_pbin+2400; }
-	  if(plane == 2){ channel = abs_pbin+4800; }
+	  if(plane == 1){ channel = abs_pbin+m_u_nwires; }
+	  if(plane == 2){ channel = abs_pbin+m_u_nwires+m_v_nwires; }
 
 	  auto channelData = m_mapSC.find(channel);
 	  sim::SimChannel& sc = (channelData == m_mapSC.end())

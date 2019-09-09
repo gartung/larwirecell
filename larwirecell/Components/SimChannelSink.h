@@ -59,6 +59,46 @@ namespace wcls {
 	double m_y_time_offset;
 	bool m_use_energy;
 
+        int m_u_nwires;
+        int m_v_nwires;
+        int m_y_nwires;
+        double m_u_minwirepitch;
+        double m_u_maxwirepitch;
+        double m_v_minwirepitch;
+        double m_v_maxwirepitch;
+        double m_y_minwirepitch;
+        double m_y_maxwirepitch;
+
+        double m_u_wirevec_x;
+        double m_u_wirevec_y;
+        double m_u_wirevec_z;
+        double m_u_pitchvec_x;
+        double m_u_pitchvec_y;
+        double m_u_pitchvec_z;
+        double m_u_origvec_x;
+        double m_u_origvec_y;
+        double m_u_origvec_z;
+
+        double m_v_wirevec_x;
+        double m_v_wirevec_y;
+        double m_v_wirevec_z;
+        double m_v_pitchvec_x;
+        double m_v_pitchvec_y;
+        double m_v_pitchvec_z;
+        double m_v_origvec_x;
+        double m_v_origvec_y;
+        double m_v_origvec_z;
+
+        double m_y_wirevec_x;
+        double m_y_wirevec_y;
+        double m_y_wirevec_z;
+        double m_y_pitchvec_x;
+        double m_y_pitchvec_y;
+        double m_y_pitchvec_z;
+        double m_y_origvec_x;
+        double m_y_origvec_y;
+        double m_y_origvec_z;
+
 	double Pi = 3.141592653589;
 	WireCell::Pimpos *uboone_u;
 	WireCell::Pimpos *uboone_v;
