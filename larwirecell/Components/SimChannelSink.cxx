@@ -57,12 +57,15 @@ void SimChannelSink::configure(const WireCell::Configuration& cfg)
     //  larsim::BackTracker::FindCimChannel()
     //  1) fill all channels even with empty SimChannel
     //  2) SimChannels are sorted in channel number
+    //  In SimChannelSink::visit(), the map is reinitialized insted of
+    //  calling map::clear() 
     for (auto& anode: m_anodes){
       for (auto& channel: anode->channels()){
         // std::cout << "-> channel: " << channel << std::endl;
         m_mapSC.emplace(channel, sim::SimChannel(channel));
       }
     }
+    // std::cout << "m_mapSC.size(): " << m_mapSC.size() << std::endl;
 
     if (m_anodes.empty()) {
 	    const std::string anode_tn = cfg["anode"].asString();
@@ -267,7 +270,10 @@ void SimChannelSink::visit(art::Event & event)
     }
 
     event.put(std::move(out), m_artlabel);
-    m_mapSC.clear();
+    // m_mapSC.clear();
+    for (auto& elem: m_mapSC){
+      elem.second = sim::SimChannel(elem.first); 
+    }
 }
 
 bool SimChannelSink::operator()(const WireCell::IDepo::pointer& indepo,
