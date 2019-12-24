@@ -233,7 +233,7 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	    double charge = patch(pbin, tbin);
 	    double tdc = tbins.center(abs_tbin);
 
-	    double wire_response_offset = iwire->center().x() - pimpos->origin().x();
+	    // double wire_response_offset = iwire->center().x() - pimpos->origin().x();
 	    if(iplane == 0){
 	      tdc = tdc + (m_u_to_rp/m_drift_speed) + m_u_time_offset;
 	      // xyz[0] = depo->pos().x()/units::cm - 94*units::mm/units::cm; // m_u_to_rp/units::cm;
@@ -246,9 +246,10 @@ void SimChannelSink::save_as_simchannel(const WireCell::IDepo::pointer& depo){
 	      tdc = tdc + (m_y_to_rp/m_drift_speed) + m_y_time_offset;
 	      // xyz[0] = depo->pos().x()/units::cm - 100*units::mm/units::cm; // m_y_to_rp/units::cm;
 	    }
-	    xyz[0] = depo->pos().x()/units::cm + wire_response_offset/units::cm;
-	    xyz[1] = depo->pos().y()/units::cm;
-	    xyz[2] = depo->pos().z()/units::cm;
+	    // xyz[0] = depo->pos().x()/units::cm + wire_response_offset/units::cm;
+	    xyz[0] = depo->prior()->pos().x()/units::cm;
+	    xyz[1] = depo->prior()->pos().y()/units::cm;
+	    xyz[2] = depo->prior()->pos().z()/units::cm;
 
 	    unsigned int temp_time = (unsigned int) ( (tdc - m_g4_ref_time) / m_tick ); 
 	    charge = abs(charge);
