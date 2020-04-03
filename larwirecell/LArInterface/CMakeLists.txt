@@ -13,9 +13,8 @@ art_make(
     ${ART_FRAMEWORK_SERVICES_REGISTRY}
     ${ART_ROOT_IO_TFILESERVICE_SERVICE}
     ${WIRECELL_LIBS}
-    ${ROOT_CORE}
+    ROOT::Core
 )
 
 install_headers()
 install_fhicl()
-install_source()

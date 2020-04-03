@@ -15,7 +15,7 @@ art_make_library(
     ${ART_PERSISTENCY_PROVENANCE}
     ${ART_UTILITIES}
     ${JSONCPP}
-    ${ROOT_CORE}
+    ROOT::Core
     ${WIRECELL_LIBS}
     canvas
     cetlib_except
